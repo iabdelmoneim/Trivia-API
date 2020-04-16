@@ -113,7 +113,7 @@ def create_app(test_config=None):
         except Exception as e:
             abort(e.code)
 
-    @app.route('/questions/{results}', methods=['POST'])
+    @app.route('/questions/results', methods=['POST'])
     def search_questions():
         try:
             questions = Question.query.filter(
@@ -178,8 +178,9 @@ def create_app(test_config=None):
         except Exception as e:
             abort(e.code)
 
-    @app.route('/quizzes', methods=['POST'])
-    def play_quiz():
+    @app.route('/quizzes', methods = ['POST'])
+       def play_quiz():
+                                                
         try:
             category = request.get_json()['quiz_category']['id']
             if not category:
@@ -188,8 +189,8 @@ def create_app(test_config=None):
             if category == 0:
                 questions = get_all_questions().get_json()
             else:
-                questions = get_questions_by_category(category).get_json()
-            previous_questions = request.get_json()['previous_questions']
+                questions = get_questions_by_category(category).offset(int(rowCount*random.random())).first()
+                previous_questions = request.get_json()['previous_questions']
             return jsonify({
                 'quizCategory': 'ALL' if category == 0 else questions['categories'][str(category)],
                 'categories': questions['categories'],
@@ -199,6 +200,8 @@ def create_app(test_config=None):
             }), 200
         except Exception as e:
             abort(e.code)
+                                                
+                                                
 
     @app.errorhandler(400)
     def bad_request(error):
