@@ -183,8 +183,8 @@ def create_app(test_config=None):
         try:
             category = request.get_json()['quiz_category']['id']
             if not category:
-                return play_quiz
-
+                abort(404)
+                                                
             if category == 0:
                 questions = get_all_questions().get_json()
             else:
